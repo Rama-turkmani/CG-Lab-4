@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catch the Stars! - Project Presentation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #0a0a2e;
+            color: #e0e0e0;
+            overflow-x: hidden;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        .slide {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 50px 60px 90px;
+            animation: fadeIn 0.5s ease;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .slide.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Stars background */
+        .stars {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .slide > * { position: relative; z-index: 1; }
+
+        h1 {
+            font-size: 2.8em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ffd700, #ff6b35, #ff1493);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            font-size: 2em;
+            font-weight: 700;
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #ffd700;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.3em;
+            color: #ff6b35;
+            margin: 10px 0 8px;
+        }
+
+        p, li {
+            font-size: 1.05em;
+            line-height: 1.6;
+            color: #ccc;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            max-width: 900px;
+        }
+
+        ul li {
+            padding: 8px 16px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border-right: 4px solid #ffd700;
+            transition: transform 0.2s;
+        }
+
+        ul li:hover { transform: translateX(-5px); background: rgba(255, 255, 255, 0.1); }
+
+        .subtitle {
+            font-size: 1.5em;
+            color: #aaa;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffd700, #ff6b35);
+            color: #0a0a2e;
+            padding: 5px 18px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85em;
+            margin: 3px;
+        }
+
+        .code-block {
+            background: #1a1a3e;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 14px 18px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #7fdbca;
+            direction: ltr;
+            text-align: left;
+            width: 100%;
+            max-width: 850px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .highlight { color: #ffd700; font-weight: 700; }
+        .keyword { color: #c792ea; }
+        .func { color: #82aaff; }
+        .string { color: #ecc48d; }
+        .comment { color: #546e7a; }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .card h3 { text-align: center; }
+
+        .nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .nav button {
+            background: linear-gradient(135deg, #ffd700, #ff6b35);
+            color: #0a0a2e;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav button:hover { transform: scale(1.05); box-shadow: 0 5px 20px rgba(255, 215, 0, 0.3); }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #666;
+            font-size: 1em;
+            z-index: 100;
+        }
+
+        .diagram {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .diagram-box {
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 10px 14px;
+            text-align: center;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        .diagram-arrow {
+            font-size: 2em;
+            color: #ff6b35;
+        }
+
+        .challenge-item {
+            border-right-color: #ff1493 !important;
+        }
+
+        .solution-item {
+            border-right-color: #00e676 !important;
+        }
+
+        .emoji { font-size: 1.2em; margin-left: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+<div class="slide-counter" id="counter"></div>
+
+<!-- Slide 1: Title -->
+<div class="slide active" id="slide-1">
+    <h1>🌟 التقط النجوم! 🌟</h1>
+    <h1 style="font-size: 2em;">Catch the Stars!</h1>
+    <p class="subtitle">مشروع عملي لمقرر الرسوميات الحاسوبية</p>
+    <p class="subtitle" style="font-size: 1.1em; color: #888;">Computer Graphics - Practical Project</p>
+    <div style="margin-top: 30px;">
+        <span class="badge">OpenGL 3.3</span>
+        <span class="badge">GLEW</span>
+        <span class="badge">GLFW</span>
+        <span class="badge">C++</span>
+        <span class="badge">GLSL Shaders</span>
+    </div>
+    <p style="margin-top: 40px; color: #666; font-size: 1em;">اضغط على الأسهم أو الأزرار للتنقل بين الشرائح</p>
+</div>
+
+<!-- Slide 2: Project Idea -->
+<div class="slide" id="slide-2">
+    <h2>🎯 فكرة المشروع</h2>
+    <ul>
+        <li><span class="emoji">🎮</span> لعبة ثنائية الأبعاد (2D) بسيطة وممتعة</li>
+        <li><span class="emoji">⭐</span> نجوم تسقط من الأعلى بألوان عشوائية</li>
+        <li><span class="emoji">🏓</span> مجداف يتحرك يميناً ويساراً لالتقاط النجوم</li>
+        <li><span class="emoji">❤️</span> نظام حياة (3 محاولات) ونقاط</li>
+        <li><span class="emoji">⚡</span> السرعة تزداد تدريجياً مع كل نجمة يتم التقاطها</li>
+        <li><span class="emoji">🔄</span> إمكانية إعادة اللعب بعد الخسارة</li>
+    </ul>
+</div>
+
+<!-- Slide 3: Technologies Used -->
+<div class="slide" id="slide-3">
+    <h2>⚙️ التقنيات المستخدمة</h2>
+    <div class="grid-2">
+        <div class="card">
+            <h3>VBO</h3>
+            <p>Vertex Buffer Object - لتخزين بيانات رؤوس الأشكال (المستطيل والمثلث) في ذاكرة GPU</p>
+        </div>
+        <div class="card">
+            <h3>EBO</h3>
+            <p>Element Buffer Object - لرسم المستطيلات من مثلثين باستخدام الفهارس بدل تكرار الرؤوس</p>
+        </div>
+        <div class="card">
+            <h3>VAO</h3>
+            <p>Vertex Array Object - لتنظيم وحفظ إعدادات سمات الرؤوس (مستطيل VAO + مثلث VAO)</p>
+        </div>
+        <div class="card">
+            <h3>Uniforms</h3>
+            <p>متغيرات موحدة - لتمرير الموقع (uOffset) والحجم (uScale) واللون (uColor) ديناميكياً</p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: Architecture -->
+<div class="slide" id="slide-4">
+    <h2>🏗️ البنية المعمارية</h2>
+    <div class="diagram">
+        <div class="diagram-box">بيانات الرؤوس<br/><small>Vertices[]</small></div>
+        <div class="diagram-arrow">←</div>
+        <div class="diagram-box">VBO<br/><small>GL_ARRAY_BUFFER</small></div>
+        <div class="diagram-arrow">←</div>
+        <div class="diagram-box">VAO<br/><small>Vertex Attributes</small></div>
+        <div class="diagram-arrow">←</div>
+        <div class="diagram-box">Shader Program<br/><small>Vertex + Fragment</small></div>
+    </div>
+    <div style="margin-top: 30px;">
+        <h3 style="text-align: center;">كائنان أساسيان للرسم:</h3>
+    </div>
+    <div class="grid-2" style="max-width: 800px;">
+        <div class="card" style="text-align: center;">
+            <h3 style="color: #00e676;">rectVAO</h3>
+            <p>مستطيل وحدة (VBO + EBO)<br/>يُرسم بـ glDrawElements<br/>للمجداف + الأرضية + مؤشرات الحياة</p>
+        </div>
+        <div class="card" style="text-align: center;">
+            <h3 style="color: #00e676;">triVAO</h3>
+            <p>مثلث وحدة (VBO فقط)<br/>يُرسم بـ glDrawArrays<br/>للنجوم الساقطة + نجوم الخلفية</p>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5: Shaders -->
+<div class="slide" id="slide-5">
+    <h2>🎨 الشيدرز (Shaders)</h2>
+    <h3>Vertex Shader - تحديد الموقع والحجم</h3>
+    <div class="code-block">
+        <span class="keyword">#version</span> 330 core<br/>
+        <span class="keyword">layout</span> (location = 0) <span class="keyword">in</span> vec3 aPos;<br/>
+        <span class="keyword">uniform</span> vec2 <span class="highlight">uOffset</span>; <span class="comment">// إزاحة الموقع</span><br/>
+        <span class="keyword">uniform</span> vec2 <span class="highlight">uScale</span>;  <span class="comment">// مقياس الحجم</span><br/>
+        <span class="keyword">void</span> <span class="func">main</span>() {<br/>
+        &nbsp;&nbsp;gl_Position = vec4(aPos.x * <span class="highlight">uScale</span>.x + <span class="highlight">uOffset</span>.x,<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aPos.y * <span class="highlight">uScale</span>.y + <span class="highlight">uOffset</span>.y,<br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;aPos.z, 1.0);<br/>
+        }
+    </div>
+    <h3>Fragment Shader - تحديد اللون</h3>
+    <div class="code-block">
+        <span class="keyword">#version</span> 330 core<br/>
+        <span class="keyword">out</span> vec4 FragColor;<br/>
+        <span class="keyword">uniform</span> vec4 <span class="highlight">uColor</span>; <span class="comment">// لون الكائن</span><br/>
+        <span class="keyword">void</span> <span class="func">main</span>() {<br/>
+        &nbsp;&nbsp;FragColor = <span class="highlight">uColor</span>;<br/>
+        }
+    </div>
+</div>
+
+<!-- Slide 6: Uniforms for Animation -->
+<div class="slide" id="slide-6">
+    <h2>✨ التحريك باستخدام Uniforms</h2>
+    <ul>
+        <li>
+            <strong class="highlight">uOffset (vec2)</strong> - يُحدد موقع كل كائن على الشاشة<br/>
+            <small style="color: #888;">مثال: تحريك المجداف يميناً ويساراً بتغيير playerX</small>
+        </li>
+        <li>
+            <strong class="highlight">uScale (vec2)</strong> - يُحدد حجم كل كائن<br/>
+            <small style="color: #888;">مثال: المجداف (0.3 × 0.06) vs النجمة (0.1 × 0.1) من نفس VBO</small>
+        </li>
+        <li>
+            <strong class="highlight">uColor (vec4)</strong> - يُحدد لون كل كائن (RGBA)<br/>
+            <small style="color: #888;">مثال: ألوان نابضة باستخدام sinf(time) لتأثير التلألؤ</small>
+        </li>
+    </ul>
+    <div class="code-block" style="max-width: 700px;">
+        <span class="comment">// رسم أي شكل بموقع وحجم ولون مختلف:</span><br/>
+        glUniform2f(loc(<span class="string">"uOffset"</span>), x, y);<br/>
+        glUniform2f(loc(<span class="string">"uScale"</span>), w, h);<br/>
+        glUniform4f(loc(<span class="string">"uColor"</span>), r, g, b, 1.0);<br/>
+        glBindVertexArray(VAO);<br/>
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    </div>
+</div>
+
+<!-- Slide 7: Game Loop -->
+<div class="slide" id="slide-7">
+    <h2>🔄 حلقة اللعبة (Game Loop)</h2>
+    <div class="diagram" style="flex-direction: column; gap: 8px;">
+        <div class="diagram-box" style="width: 350px;">1. معالجة المدخلات (Input)</div>
+        <div class="diagram-arrow" style="transform: rotate(90deg);">←</div>
+        <div class="diagram-box" style="width: 350px;">2. تحديث حالة اللعبة (Update)</div>
+        <div class="diagram-arrow" style="transform: rotate(90deg);">←</div>
+        <div class="diagram-box" style="width: 350px;">3. الرسم (Render)</div>
+        <div class="diagram-arrow" style="transform: rotate(90deg);">←</div>
+        <div class="diagram-box" style="width: 350px;">4. تبديل Buffers + أحداث</div>
+    </div>
+    <div style="margin-top: 20px; max-width: 800px;">
+        <ul>
+            <li><strong>Input:</strong> أسهم لوحة المفاتيح لتحريك المجداف، ESC للخروج، R لإعادة اللعب</li>
+            <li><strong>Update:</strong> تحريك النجمة للأسفل، فحص التصادم، تحديث النقاط والحياة</li>
+            <li><strong>Render:</strong> رسم الخلفية ← الأرضية ← النجوم ← المجداف ← مؤشرات الحياة</li>
+        </ul>
+    </div>
+</div>
+
+<!-- Slide 8: Challenges -->
+<div class="slide" id="slide-8">
+    <h2>🧩 التحديات والحلول</h2>
+    <div class="grid-2" style="max-width: 1000px;">
+        <div>
+            <h3 style="color: #ff1493; text-align: center;">التحديات</h3>
+            <ul>
+                <li class="challenge-item">رسم أشكال مختلفة الأحجام بدون مصفوفات تحويل</li>
+                <li class="challenge-item">تحريك الكائنات بسلاسة</li>
+                <li class="challenge-item">فحص التصادم بين الأشكال</li>
+                <li class="challenge-item">إدارة حالات اللعبة المختلفة</li>
+            </ul>
+        </div>
+        <div>
+            <h3 style="color: #00e676; text-align: center;">الحلول</h3>
+            <ul>
+                <li class="solution-item">استخدام Uniforms للمقياس (uScale) بدل المصفوفات</li>
+                <li class="solution-item">تحديث الموقع كل إطار + VSync لتثبيت السرعة</li>
+                <li class="solution-item">خوارزمية AABB للتصادم بين المستطيلات</li>
+                <li class="solution-item">متغيرات bool (gameOver) + إعادة تعيين بزر R</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9: Visual Effects -->
+<div class="slide" id="slide-9">
+    <h2>🎆 التأثيرات البصرية</h2>
+    <ul>
+        <li><span class="emoji">🌙</span> <strong>خلفية سماء ليلية:</strong> لون أزرق غامق يتغير بلطف مع الوقت باستخدام sinf(time)</li>
+        <li><span class="emoji">✨</span> <strong>نجوم خلفية متلألئة:</strong> 8 نجوم ثابتة بتأثير تلألؤ (تغيير سطوع اللون)</li>
+        <li><span class="emoji">💫</span> <strong>نجمة ساقطة نابضة:</strong> لون النجمة ينبض باستخدام pulse = 0.85 + 0.15 * sin(t*6)</li>
+        <li><span class="emoji">🎨</span> <strong>مجداف متغير اللون:</strong> ألوان المجداف تتغير بسلاسة مع مرور الوقت</li>
+        <li><span class="emoji">🔴</span> <strong>شاشة Game Over:</strong> خلفية حمراء + علامة + وامضة في المنتصف</li>
+        <li><span class="emoji">❤️</span> <strong>مؤشرات الحياة:</strong> مستطيلات حمراء صغيرة في الزاوية العليا</li>
+    </ul>
+</div>
+
+<!-- Slide 10: Demo & Summary -->
+<div class="slide" id="slide-10">
+    <h2>📋 ملخص المشروع</h2>
+    <div class="grid-2" style="max-width: 900px;">
+        <div class="card">
+            <h3 style="text-align: center;">المفاهيم المطبقة</h3>
+            <p style="text-align: center;">
+                <span class="badge">VBO × 2</span>
+                <span class="badge">EBO × 1</span>
+                <span class="badge">VAO × 2</span><br/><br/>
+                <span class="badge">Vertex Shader</span>
+                <span class="badge">Fragment Shader</span><br/><br/>
+                <span class="badge">Uniform: uOffset</span>
+                <span class="badge">Uniform: uScale</span>
+                <span class="badge">Uniform: uColor</span>
+            </p>
+        </div>
+        <div class="card">
+            <h3 style="text-align: center;">عناصر اللعبة</h3>
+            <p style="text-align: center;">
+                <span class="badge">مجداف اللاعب</span>
+                <span class="badge">نجمة ساقطة</span><br/><br/>
+                <span class="badge">أرضية</span>
+                <span class="badge">نجوم خلفية × 8</span><br/><br/>
+                <span class="badge">نظام نقاط</span>
+                <span class="badge">نظام حياة × 3</span>
+                <span class="badge">Game Over + Restart</span>
+            </p>
+        </div>
+    </div>
+    <div style="margin-top: 40px;">
+        <h3 style="text-align: center; color: #ffd700; font-size: 1.8em;">شكراً لاستماعكم! 🌟</h3>
+        <p style="text-align: center; color: #888; margin-top: 10px;">Controls: LEFT/RIGHT arrows or A/D | ESC to quit | R to restart</p>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+    <button onclick="prevSlide()">→ السابق</button>
+    <button onclick="nextSlide()">التالي ←</button>
+</div>
+
+<script>
+    // Generate stars background
+    const starsContainer = document.getElementById('stars');
+    for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.left = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        star.style.animationDuration = (Math.random() * 2 + 1) + 's';
+        starsContainer.appendChild(star);
+    }
+
+    // Slide navigation
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    function showSlide(n) {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        const slide = document.getElementById('slide-' + n);
+        slide.classList.add('active');
+        slide.scrollTop = 0;
+        window.scrollTo(0, 0);
+        document.getElementById('counter').textContent = n + ' / ' + totalSlides;
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides) { currentSlide++; showSlide(currentSlide); }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 1) { currentSlide--; showSlide(currentSlide); }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') nextSlide();
+        else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') prevSlide();
+    });
+
+    showSlide(1);
+</script>
+
+</body>
+</html>

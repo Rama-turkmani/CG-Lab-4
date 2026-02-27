@@ -1,0 +1,30 @@
+# Visual Studio files
+.vs/
+x64/
+Debug/
+Release/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.db
+*.opendb
+*.ipch
+
+# Build output
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.log
+*.tlog
+*.idb
+*.pch
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# PDF books (too large for git)
+*.pdf
